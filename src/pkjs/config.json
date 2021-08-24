@@ -1,0 +1,15 @@
+[
+    {
+        "type": "section",
+        "items": [
+            {
+                "type": "heading",
+                "defaultValue": "Slash"
+            },
+            {
+                "type": "text",
+                "defaultValue": "By Nicki"
+            }
+        ]
+    }
+]
