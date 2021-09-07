@@ -17,6 +17,11 @@ static void bluetooth_callback(bool connected) {
   }
 }
 
+void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  update_time();
+  layer_mark_dirty(time_layer);
+}
+
 //universal update and set the settings to everything
 void update_stuff() {
   window_set_background_color(main_window, settings.bg_color);
@@ -24,6 +29,7 @@ void update_stuff() {
   update_time();
 
   layer_mark_dirty(time_layer);
+  layer_mark_dirty(flag);
 }
 
 //actual app window loading functions
@@ -34,7 +40,9 @@ static void main_window_load(Window *window) {
   window_set_background_color(main_window, settings.bg_color);
 
   //draw flag
-
+  flag = layer_create(bounds);
+  layer_set_update_proc(flag, flag_update_proc);
+  layer_add_child(window_layer, flag);
 
   //draw time
   /*
@@ -54,12 +62,21 @@ static void main_window_unload() {
 static void init() {
   main_window = window_create();
 
+  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+
   window_set_window_handlers(main_window, (WindowHandlers) {
     .load = main_window_load,
     .unload = main_window_unload
   });
 
+  init_msg();
+  load_settings();
+
   window_stack_push(main_window, true);
+  
+  bluetooth_callback(connection_service_peek_pebble_app_connection());
+  
+  update_stuff();
 }
 
 static void deinit() {

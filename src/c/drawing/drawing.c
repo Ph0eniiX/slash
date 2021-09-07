@@ -6,8 +6,11 @@ extern Window *main_window;
 
 extern ClaySettings settings;
 
-char hour_char[] = "hh";
-char min_char[] = "mm";
+static char hour_char[] = "hh";
+static char min_char[] = "mm";
+
+extern int *flag_colors[];
+extern int num_stripes[];
 
 static void draw_flag(int segments, int colors[], GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
@@ -28,6 +31,10 @@ static void draw_time(GContext *ctx) {
 
     graphics_context_set_text_color(ctx, settings.main_color);
     graphics_draw_text(ctx, hour_char, settings.time_font, GRect(0, bounds.size.h / 2, bounds.size.w, 50), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+}
+
+void flag_update_proc(Layer *layer, GContext *ctx) {
+    draw_flag(num_stripes[settings.flag_number], flag_colors[settings.flag_number], ctx);
 }
 
 void time_draw_update_proc(Layer *layer, GContext *ctx) {
