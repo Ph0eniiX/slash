@@ -1,17 +1,21 @@
 #include <pebble.h>
 #include "main.h"
+#include "drawing/drawing.h"
+#include "config/config.h"
+#include "messaging/messaging.h"
 
 //main window and layer variable stuff
 Window *main_window;
-static Layer *time_layer, *flag;
+Layer *time_layer, *flag;
 
 ClaySettings settings;
 
 //actual app window loading functions
 static void main_window_load(Window *window) {
-
+  
 }
 
+//unloading functions !!
 static void main_window_unload() {
 
 }
@@ -39,3 +43,7 @@ int main(void) {
   app_event_loop();
   deinit();
 }
+
+//sir, finishing this big mac
+
+//https://www.youtube.com/watch?v=tCUJ8JqiyZc
