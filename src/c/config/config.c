@@ -9,6 +9,7 @@ static void set_defaults() {
     settings.main_color = GColorWhite;
     settings.slash_color = GColorMagenta;
     settings.time_font = fonts_get_system_font(FONT_KEY_LECO_42_NUMBERS);
+    settings.do_bt_buzz = true;
 }
 
 void load_settings() {

@@ -6,4 +6,5 @@ typedef struct ClaySettings {
     GColor main_color;
     GColor slash_color;
     GFont time_font;
+    bool do_bt_buzz;
 } ClaySettings;
