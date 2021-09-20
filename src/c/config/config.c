@@ -10,7 +10,7 @@ static void set_defaults() {
     settings.slash_color = GColorMagenta;
     settings.time_font = fonts_get_system_font(FONT_KEY_LECO_42_NUMBERS);
     settings.do_bt_buzz = true;
-    settings.flag_number = 1;
+    settings.flag_number = 0;
 }
 
 void load_settings() {

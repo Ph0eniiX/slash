@@ -15,11 +15,11 @@ extern int num_stripes[];
 static void draw_flag(int segments, int colors[], GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
-    int h = bounds.size.h;
-    int w = bounds.size.w / segments + (bounds.size.w % segments != 0);
+    int h = bounds.size.h / segments + (bounds.size.h % segments != 0);
+    int w = bounds.size.w;
 
     for (int i = 0; i < segments; i++) {
-        GRect flag_stripe = GRect(w * i, 0, w, h);
+        GRect flag_stripe = GRect(0, h * i, w, h);
 
         graphics_context_set_fill_color(ctx, GColorFromHEX(colors[i]));
         graphics_fill_rect(ctx, flag_stripe, 0, GCornerNone);
@@ -28,9 +28,22 @@ static void draw_flag(int segments, int colors[], GContext *ctx) {
 
 static void draw_time(GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+    
+    int y_offset = 25;
+    int x_offset = 30;
 
+    int line_y_shift = 0;
+    int line_y_offset = 40;
+    int line_x_offset = 30;
+
+    //drawing the time things
     graphics_context_set_text_color(ctx, settings.main_color);
-    graphics_draw_text(ctx, hour_char, settings.time_font, GRect(0, bounds.size.h / 2, bounds.size.w, 50), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+    graphics_draw_text(ctx, hour_char, settings.time_font, GRect(0 - x_offset, bounds.size.h / 2 - 26 - y_offset, bounds.size.w, 50), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+    graphics_draw_text(ctx, min_char, settings.time_font, GRect(0 + x_offset, bounds.size.h / 2 - 26 + y_offset, bounds.size.w, 50), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+
+    graphics_context_set_stroke_color(ctx, settings.slash_color);
+    graphics_context_set_stroke_width(ctx, 5);
+    graphics_draw_line(ctx, GPoint(bounds.size.w / 2 - line_x_offset, bounds.size.h / 2 + line_y_offset + line_y_shift), GPoint(bounds.size.w / 2 + line_x_offset, bounds.size.h / 2 - line_y_offset + line_y_shift));
 }
 
 void flag_update_proc(Layer *layer, GContext *ctx) {

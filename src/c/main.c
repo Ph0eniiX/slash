@@ -45,12 +45,9 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, flag);
 
   //draw time
-  /*
   time_layer = layer_create(bounds);
   layer_set_update_proc(time_layer, time_draw_update_proc);
   layer_add_child(window_layer, time_layer);
-  */
-  
 }
 
 //unloading functions !!
@@ -62,6 +59,7 @@ static void main_window_unload() {
 static void init() {
   main_window = window_create();
 
+  //there's some sort of error in here, i'll fix later
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
   window_set_window_handlers(main_window, (WindowHandlers) {
@@ -74,7 +72,7 @@ static void init() {
 
   window_stack_push(main_window, true);
   
-  bluetooth_callback(connection_service_peek_pebble_app_connection());
+  //bluetooth_callback(connection_service_peek_pebble_app_connection());
   
   update_stuff();
 }
