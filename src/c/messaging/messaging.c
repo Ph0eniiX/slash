@@ -28,12 +28,12 @@ static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
 
     Tuple *flag_t = dict_find(iter, MESSAGE_KEY_flag_number_key);
     if(flag_t) {
-        settings.flag_number = atoi(flag_t->value->int32);
+        settings.flag_number = atoi(flag_t->value->cstring);
     }
 
     Tuple *rot_flag_t = dict_find(iter, MESSAGE_KEY_rotate_flag_key);
     if(rot_flag_t) {
-        settings.rot_flag = atoi(rot_flag_t->value->int32);
+        settings.rot_flag = atoi(rot_flag_t->value->cstring);
     }
 
     save_settings();
