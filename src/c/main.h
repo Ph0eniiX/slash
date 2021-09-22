@@ -8,4 +8,5 @@ typedef struct ClaySettings {
     GFont time_font;
     bool do_bt_buzz;
     int flag_number;
+    int rot_flag;
 } ClaySettings;

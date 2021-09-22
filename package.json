@@ -24,12 +24,11 @@
     },
     "messageKeys": [
       "bg_color_key",
-      "bg_cover_color_key",
       "main_color_key",
       "slash_color_key",
-      "time_font_key",
       "do_bt_buzz_key",
-      "flag_number_key"
+      "flag_number_key",
+      "rotate_flag_key"
     ],
     "resources": {
       "media": []

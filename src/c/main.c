@@ -64,7 +64,6 @@ static void main_window_unload() {
 static void init() {
   main_window = window_create();
 
-  //there's some sort of error in here, i'll fix later
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
   window_set_window_handlers(main_window, (WindowHandlers) {
@@ -77,7 +76,7 @@ static void init() {
 
   window_stack_push(main_window, true);
   
-  //bluetooth_callback(connection_service_peek_pebble_app_connection());
+  bluetooth_callback(connection_service_peek_pebble_app_connection());
   
   update_stuff();
 }

@@ -15,14 +15,46 @@ extern int num_stripes[];
 static void draw_flag(int segments, int colors[], GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
-    int h = bounds.size.h / segments + (bounds.size.h % segments != 0);
-    int w = bounds.size.w;
+    if(settings.rot_flag == 3) {
+        int h = bounds.size.h;
+        int w = bounds.size.w / segments + (bounds.size.w % segments != 0);
 
-    for (int i = 0; i < segments; i++) {
-        GRect flag_stripe = GRect(0, h * i, w, h);
+        for (int i = 0; i < segments; i++) {
+            GRect flag_stripe = GRect(w * i, 0, w, h);
 
-        graphics_context_set_fill_color(ctx, GColorFromHEX(colors[i]));
-        graphics_fill_rect(ctx, flag_stripe, 0, GCornerNone);
+            graphics_context_set_fill_color(ctx, GColorFromHEX(colors[i]));
+            graphics_fill_rect(ctx, flag_stripe, 0, GCornerNone);
+        }
+    } else if(settings.rot_flag == 2) {
+        int h = -1 * bounds.size.h / segments - (-1 * bounds.size.h % segments != 0);
+        int w = bounds.size.w;
+
+        for (int i = 0; i < segments; i++) {
+            GRect flag_stripe = GRect(0, bounds.size.h + (h * i), w, h);
+
+            graphics_context_set_fill_color(ctx, GColorFromHEX(colors[i]));
+            graphics_fill_rect(ctx, flag_stripe, 0, GCornerNone);
+        }
+    } else if(settings.rot_flag == 1) {
+        int h = bounds.size.h;
+        int w = -1 * bounds.size.w / segments - (bounds.size.w % segments != 0);
+
+        for (int i = 0; i < segments; i++) {
+            GRect flag_stripe = GRect(bounds.size.w + (w * i), 0, w, h);
+
+            graphics_context_set_fill_color(ctx, GColorFromHEX(colors[i]));
+            graphics_fill_rect(ctx, flag_stripe, 0, GCornerNone);
+        }
+    } else {
+        int h = bounds.size.h / segments + (bounds.size.h % segments != 0);
+        int w = bounds.size.w;
+
+        for (int i = 0; i < segments; i++) {
+            GRect flag_stripe = GRect(0, h * i, w, h);
+
+            graphics_context_set_fill_color(ctx, GColorFromHEX(colors[i]));
+            graphics_fill_rect(ctx, flag_stripe, 0, GCornerNone);
+        }
     }
 }
 
