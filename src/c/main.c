@@ -6,7 +6,7 @@
 
 //main window and layer variable stuff
 Window *main_window;
-Layer *time_layer, *flag;
+Layer *time_layer, *flag, *bg_cover;
 
 ClaySettings settings;
 
@@ -24,7 +24,7 @@ void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 //universal update and set the settings to everything
 void update_stuff() {
-  window_set_background_color(main_window, settings.bg_color);
+  window_set_background_color(main_window, settings.slash_color);
 
   update_time();
 
@@ -37,12 +37,17 @@ static void main_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  window_set_background_color(main_window, settings.bg_color);
+  window_set_background_color(main_window, settings.slash_color);
 
   //draw flag
   flag = layer_create(bounds);
   layer_set_update_proc(flag, flag_update_proc);
   layer_add_child(window_layer, flag);
+
+  //draw bg over flag
+  bg_cover = layer_create(bounds);
+  layer_set_update_proc(bg_cover, bg_update_proc);
+  layer_add_child(window_layer, bg_cover);
 
   //draw time
   time_layer = layer_create(bounds);

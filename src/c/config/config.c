@@ -7,8 +7,8 @@ extern ClaySettings settings;
 static void set_defaults() {
     settings.bg_color = GColorBlack;
     settings.main_color = GColorWhite;
-    settings.slash_color = GColorMagenta;
-    settings.time_font = fonts_get_system_font(FONT_KEY_LECO_42_NUMBERS);
+    settings.slash_color = GColorRed;
+    settings.time_font = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
     settings.do_bt_buzz = true;
     settings.flag_number = 0;
 }

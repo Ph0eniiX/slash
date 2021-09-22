@@ -11,5 +11,18 @@
                 "defaultValue": "By Nicki"
             }
         ]
+    },
+    {
+        "type": "section",
+        "items": [
+            {
+                "type": "heading",
+                "defaultValue": "Colors",
+                "size": "7"
+            },
+            {
+                "type": "color"
+            }
+        ]
     }
 ]

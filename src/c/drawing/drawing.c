@@ -26,11 +26,22 @@ static void draw_flag(int segments, int colors[], GContext *ctx) {
     }
 }
 
+static void draw_bg_rect(GContext *ctx) {
+    GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+
+    int edge_size = 7;
+
+    graphics_context_set_fill_color(ctx, settings.bg_color);
+    
+    //graphics_fill_circle(ctx, GPoint(bounds.size.w / 2, bounds.size.h / 2), bounds.size.h - edge_size);
+    graphics_fill_rect(ctx, GRect(edge_size, edge_size, bounds.size.w - 2 * edge_size, bounds.size.h - 2 * edge_size), 0, 0);
+}
+
 static void draw_time(GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
     
     int y_offset = 25;
-    int x_offset = 30;
+    int x_offset = 25;
 
     int line_y_shift = 0;
     int line_y_offset = 40;
@@ -44,6 +55,10 @@ static void draw_time(GContext *ctx) {
     graphics_context_set_stroke_color(ctx, settings.slash_color);
     graphics_context_set_stroke_width(ctx, 5);
     graphics_draw_line(ctx, GPoint(bounds.size.w / 2 - line_x_offset, bounds.size.h / 2 + line_y_offset + line_y_shift), GPoint(bounds.size.w / 2 + line_x_offset, bounds.size.h / 2 - line_y_offset + line_y_shift));
+}
+
+void bg_update_proc(Layer *layer, GContext *ctx) {
+    draw_bg_rect(ctx);
 }
 
 void flag_update_proc(Layer *layer, GContext *ctx) {
