@@ -6,7 +6,7 @@
 
 //main window and layer variable stuff
 Window *main_window;
-Layer *time_layer, *flag, *bg_cover;
+Layer *time_layer, *flag_layer, *bg_cover, *date_layer;
 
 ClaySettings settings;
 
@@ -29,7 +29,7 @@ void update_stuff() {
   update_time();
 
   layer_mark_dirty(time_layer);
-  layer_mark_dirty(flag);
+  layer_mark_dirty(flag_layer);
 }
 
 //actual app window loading functions
@@ -40,9 +40,9 @@ static void main_window_load(Window *window) {
   window_set_background_color(main_window, settings.slash_color);
 
   //draw flag
-  flag = layer_create(bounds);
-  layer_set_update_proc(flag, flag_update_proc);
-  layer_add_child(window_layer, flag);
+  flag_layer = layer_create(bounds);
+  layer_set_update_proc(flag_layer, flag_update_proc);
+  layer_add_child(window_layer, flag_layer);
 
   //draw bg over flag
   bg_cover = layer_create(bounds);
