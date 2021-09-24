@@ -92,8 +92,10 @@
                     {
                         "value": "7",
                         "label": "Nonbinary"
-                    },
-                    {
+                    }
+                ]
+            },
+            {
                         "type": "select",
                         "defaultValue": "0",
                         "label": "Flag orientation",
@@ -118,8 +120,10 @@
                             }
                         ]
                     }
-                ]
-            }
         ]
+    },
+    {
+        "type": "submit",
+        "defaultValue": "Save"
     }
 ]

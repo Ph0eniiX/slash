@@ -10,3 +10,5 @@ typedef struct ClaySettings {
     int flag_number;
     int rot_flag;
 } ClaySettings;
+
+void update_stuff();

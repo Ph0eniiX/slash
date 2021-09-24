@@ -9,6 +9,8 @@ extern ClaySettings settings;
 static char hour_char[] = "hh";
 static char min_char[] = "mm";
 
+static int edge_size = 7;
+
 extern int *flag_colors[];
 extern int num_stripes[];
 
@@ -61,12 +63,17 @@ static void draw_flag(int segments, int colors[], GContext *ctx) {
 static void draw_bg_rect(GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
-    int edge_size = 7;
-
     graphics_context_set_fill_color(ctx, settings.bg_color);
     
-    //graphics_fill_circle(ctx, GPoint(bounds.size.w / 2, bounds.size.h / 2), bounds.size.h - edge_size);
     graphics_fill_rect(ctx, GRect(edge_size, edge_size, bounds.size.w - 2 * edge_size, bounds.size.h - 2 * edge_size), 0, 0);
+}
+
+static void draw_bg_circle(GContext *ctx) {
+    GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+
+    int edge_size = 7;
+
+    graphics_fill_circle(ctx, GPoint(bounds.size.w / 2, bounds.size.h / 2), bounds.size.h / 2 - edge_size);
 }
 
 static void draw_time(GContext *ctx) {
@@ -90,7 +97,7 @@ static void draw_time(GContext *ctx) {
 }
 
 void bg_update_proc(Layer *layer, GContext *ctx) {
-    draw_bg_rect(ctx);
+    PBL_IF_ROUND_ELSE(draw_bg_circle(ctx), draw_bg_rect(ctx));
 }
 
 void flag_update_proc(Layer *layer, GContext *ctx) {

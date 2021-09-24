@@ -17,7 +17,8 @@
     "targetPlatforms": [
       "aplite",
       "basalt",
-      "diorite"
+      "diorite",
+      "chalk"
     ],
     "watchapp": {
       "watchface": true

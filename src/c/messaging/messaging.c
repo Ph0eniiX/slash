@@ -37,6 +37,7 @@ static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
     }
 
     save_settings();
+    update_stuff();
 }
 
 void init_msg() {
