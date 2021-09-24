@@ -8,6 +8,7 @@ extern ClaySettings settings;
 
 static char hour_char[] = "hh";
 static char min_char[] = "mm";
+static char date_char[] = "DAY MM/DD";
 
 static int edge_size = 7;
 
@@ -96,6 +97,13 @@ static void draw_time(GContext *ctx) {
     graphics_draw_line(ctx, GPoint(bounds.size.w / 2 - line_x_offset, bounds.size.h / 2 + line_y_offset + line_y_shift), GPoint(bounds.size.w / 2 + line_x_offset, bounds.size.h / 2 - line_y_offset + line_y_shift));
 }
 
+static void draw_date(GContext *ctx) {
+    GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+    
+    graphics_context_set_text_color(ctx, settings.main_color);
+    graphics_draw_text(ctx, date_char, FONT_KEY_GOTHIC_24_BOLD, GRect(0, bounds.size.h - 60, bounds.size.w, bounds.size.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+}
+
 void bg_update_proc(Layer *layer, GContext *ctx) {
     PBL_IF_ROUND_ELSE(draw_bg_circle(ctx), draw_bg_rect(ctx));
 }
@@ -108,10 +116,15 @@ void time_draw_update_proc(Layer *layer, GContext *ctx) {
     draw_time(ctx);
 }
 
+void date_update_proc(Layer *layer, GContext *ctx) {
+    draw_date(ctx);
+}
+
 void update_time() {
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
 
     strftime(hour_char, sizeof(hour_char), clock_is_24h_style() ? "%H" : "%I", tick_time);
     strftime(min_char, sizeof(min_char), "%M", tick_time);
+    strftime(date_char, sizeof(date_char), "%a %m/%d", tick_time);
 }

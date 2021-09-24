@@ -55,6 +55,12 @@
                 "label": "Enable buzz on BT disconnect"
             },
             {
+                "type": "toggle",
+                "messageKey": "do_date_key",
+                "defaultValue": "true",
+                "label": "Shake to see date"
+            },
+            {
                 "type": "select",
                 "defaultValue": "0",
                 "messageKey": "flag_number_key",

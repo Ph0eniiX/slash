@@ -10,6 +10,7 @@ static void set_defaults() {
     settings.slash_color = GColorRed;
     settings.time_font = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
     settings.do_bt_buzz = true;
+    settings.do_date = true;
     settings.flag_number = 0;
     settings.rot_flag = 0;
 }
