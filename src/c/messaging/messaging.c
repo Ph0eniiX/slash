@@ -36,6 +36,11 @@ static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
         settings.rot_flag = atoi(rot_flag_t->value->cstring);
     }
 
+    Tuple *date_t = dict_find(iter, MESSAGE_KEY_do_date_key);
+    if(date_t) {
+        settings.do_date = date_t->value->int32 == 1;
+    }
+
     save_settings();
     update_stuff();
 }
