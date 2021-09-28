@@ -101,7 +101,7 @@ static void draw_date(GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
     
     graphics_context_set_text_color(ctx, settings.main_color);
-    graphics_draw_text(ctx, date_char, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), GRect(0, bounds.size.h - 60, bounds.size.w, bounds.size.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+    graphics_draw_text(ctx, date_char, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), GRect(0, bounds.size.h - 50, bounds.size.w, bounds.size.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
 }
 
 void bg_update_proc(Layer *layer, GContext *ctx) {

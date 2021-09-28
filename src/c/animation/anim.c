@@ -8,15 +8,18 @@ void animate_stuff() {
     GRect bounds = layer_get_bounds(window_get_root_layer(main_window));
 
     //makes the coordinates for the animation
-    GRect anim_rect_start = GRect(0, 0, bounds.size.w, bounds.size.h);
-    GRect anim_rect_end = GRect(0, 60, bounds.size.w, bounds.size.h);
+    GRect anim_date_start = GRect(0, 50, bounds.size.w, bounds.size.h);
+    GRect anim_date_end = GRect(0, 0, bounds.size.w, bounds.size.h);
+
+    GRect anim_time_start = GRect(0, 0, bounds.size.w, bounds.size.h);
+    GRect anim_time_end = GRect(0, -10, bounds.size.w, bounds.size.h);
 
     //sets the coordinate GRect's to a temporary property animation
-    PropertyAnimation *prop_anim_date_start = property_animation_create_layer_frame(date_layer, &anim_rect_start, &anim_rect_end);
-    PropertyAnimation *prop_anim_time_start = property_animation_create_layer_frame(time_layer, &anim_rect_start, &anim_rect_end);
+    PropertyAnimation *prop_anim_date_start = property_animation_create_layer_frame(date_layer, &anim_date_start, &anim_date_end);
+    PropertyAnimation *prop_anim_time_start = property_animation_create_layer_frame(time_layer, &anim_time_start, &anim_time_end);
 
-    PropertyAnimation *prop_anim_date_end = property_animation_create_layer_frame(date_layer, &anim_rect_start, &anim_rect_end);
-    PropertyAnimation *prop_anim_time_end = property_animation_create_layer_frame(time_layer, &anim_rect_start, &anim_rect_end);
+    PropertyAnimation *prop_anim_date_end = property_animation_create_layer_frame(date_layer, &anim_date_end, &anim_date_start);
+    PropertyAnimation *prop_anim_time_end = property_animation_create_layer_frame(time_layer, &anim_time_end, &anim_time_start);
 
     //sets the property animations to each animation variable
     date_anim_start = property_animation_get_animation(prop_anim_date_start);

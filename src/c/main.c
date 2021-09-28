@@ -52,8 +52,6 @@ void update_stuff() {
   update_time();
 
   window_set_background_color(main_window, settings.slash_color);
-  
-  layer_set_hidden(date_layer, !settings.do_date);
 
   layer_mark_dirty(time_layer);
   layer_mark_dirty(flag_layer);
@@ -86,6 +84,7 @@ static void main_window_load(Window *window) {
   date_layer = layer_create(bounds);
   layer_set_update_proc(date_layer, date_update_proc);
   layer_add_child(window_layer, date_layer);
+  layer_set_hidden(date_layer, true);
 
   animate_stuff();
 
@@ -114,13 +113,11 @@ static void init() {
   init_msg();
   load_settings();
 
-  window_stack_push(main_window, true);
-
   accel_tap_service_subscribe(accel_tap_handler);
-  
+
   bluetooth_callback(connection_service_peek_pebble_app_connection());
-  
-  update_stuff();
+
+  window_stack_push(main_window, true);
 }
 
 static void deinit() {
