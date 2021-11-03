@@ -33,7 +33,14 @@
       "rotate_flag_key"
     ],
     "resources": {
-      "media": []
+      "media": [
+        {
+          "menuIcon": "true",
+          "type": "png",
+          "name": "MENU_ICON",
+          "file": "slash_ico.png"
+        }
+      ]
     },
     "capabilities": [
       "configurable"
