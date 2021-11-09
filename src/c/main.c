@@ -26,7 +26,10 @@ static void timer_callback(void *ctx) {
 }
 
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-  if(animate_scheduled == false && settings.do_date == true) {
+  GRect bounds_real = layer_get_bounds(window_get_root_layer(main_window));
+  GRect bounds_unobstructed = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+
+  if(animate_scheduled == false && settings.do_date == true && bounds_real.size.h == bounds_unobstructed.size.h) {
     animate_scheduled = true;
     app_timer_register(3000, timer_callback, NULL);
 
