@@ -8,7 +8,6 @@
 //main window and layer variable stuff
 Window *main_window;
 Layer *time_layer, *flag_layer, *bg_cover, *date_layer;
-Animation *time_anim_start, *time_anim_end, *date_anim_start, *date_anim_end;
 
 ClaySettings settings;
 
