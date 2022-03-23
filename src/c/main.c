@@ -21,6 +21,7 @@ static void bluetooth_callback(bool connected) {
   }
 }
 
+//sets animate_scheduled boolean to false after the animation finishes 
 static void timer_callback(void *ctx) {
   animate_scheduled = false;
 }
@@ -31,10 +32,7 @@ static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
 
   if(animate_scheduled == false && settings.do_date == true && bounds_real.size.h == bounds_unobstructed.size.h) {
     animate_scheduled = true;
-    app_timer_register(3000, timer_callback, NULL);
-
-    Animation *start_spawn = animation_spawn_create(time_anim_start, date_anim_start, NULL);
-    Animation *end_spawn = animation_spawn_create(time_anim_end, date_anim_end, NULL);
+    app_timer_register(3400, timer_callback, NULL);
 
     animate_stuff();
 
