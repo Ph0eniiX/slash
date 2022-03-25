@@ -104,6 +104,18 @@ static void draw_date(GContext *ctx) {
     graphics_draw_text(ctx, date_char, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), GRect(0, bounds.size.h - 50, bounds.size.w, bounds.size.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
 }
 
+static void draw_bat(GContext *ctx) {
+    GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+
+    int bat_bar_height = 7;
+
+    GRect bat_rect = GRect((bounds.size.w * (100 - battery_level)) / 100 / 2, bounds.size.h - bat_bar_height, (bounds.size.w * battery_level) / 100, bat_bar_height);
+
+    graphics_context_set_fill_color(ctx, settings.main_color);
+    //graphics_draw_text(ctx, bat_what, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), GRect(0, bounds.size.h - 30, bounds.size.w, bounds.size.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+    graphics_fill_rect(ctx, bat_rect, 0, GCornerNone);
+}
+
 void bg_update_proc(Layer *layer, GContext *ctx) {
     PBL_IF_ROUND_ELSE(draw_bg_circle(ctx), draw_bg_rect(ctx));
 }
@@ -118,6 +130,10 @@ void time_draw_update_proc(Layer *layer, GContext *ctx) {
 
 void date_update_proc(Layer *layer, GContext *ctx) {
     draw_date(ctx);
+}
+
+void bat_update_proc(Layer *layer, GContext *ctx) {
+    draw_bat(ctx);
 }
 
 void update_time() {

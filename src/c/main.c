@@ -7,7 +7,7 @@
 
 //main window and layer variable stuff
 Window *main_window;
-Layer *time_layer, *flag_layer, *bg_cover, *date_layer;
+Layer *time_layer, *flag_layer, *bg_cover, *date_layer, *bat_layer;
 
 ClaySettings settings;
 
@@ -23,6 +23,12 @@ static void bluetooth_callback(bool connected) {
 //sets animate_scheduled boolean to false after the animation finishes 
 static void timer_callback(void *ctx) {
   animate_scheduled = false;
+  layer_set_hidden(bat_layer, true);
+}
+
+static void battery_callback(BatteryChargeState state) {
+  battery_level = state.charge_percent;
+  layer_mark_dirty(bat_layer);
 }
 
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
@@ -36,6 +42,7 @@ static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
     animate_stuff();
 
     layer_set_hidden(date_layer, false);
+    layer_set_hidden(bat_layer, false);
 
     animation_schedule(start_spawn);
     animation_schedule(end_spawn);
@@ -57,6 +64,7 @@ void update_stuff() {
   layer_mark_dirty(flag_layer);
   layer_mark_dirty(bg_cover);
   layer_mark_dirty(date_layer);
+  layer_mark_dirty(bat_layer);
 }
 
 //actual app window loading functions
@@ -86,6 +94,11 @@ static void main_window_load(Window *window) {
   layer_add_child(window_layer, date_layer);
   layer_set_hidden(date_layer, true);
 
+  bat_layer = layer_create(bounds);
+  layer_set_update_proc(bat_layer, bat_update_proc);
+  layer_add_child(window_layer, bat_layer);
+  layer_set_hidden(bat_layer, true);
+
   animate_stuff();
 
   update_stuff();
@@ -104,6 +117,7 @@ static void init() {
   main_window = window_create();
 
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+  battery_state_service_subscribe(battery_callback);
 
   window_set_window_handlers(main_window, (WindowHandlers) {
     .load = main_window_load,
@@ -113,21 +127,22 @@ static void init() {
   init_msg();
   load_settings();
 
-  accel_tap_service_subscribe(accel_tap_handler);
-
-  bluetooth_callback(connection_service_peek_pebble_app_connection());
-
   window_stack_push(main_window, true);
+
+  accel_tap_service_subscribe(accel_tap_handler);
+  bluetooth_callback(connection_service_peek_pebble_app_connection());  
+  battery_callback(battery_state_service_peek());
 }
 
 static void deinit() {
   window_destroy(main_window);
   tick_timer_service_unsubscribe();
   accel_data_service_unsubscribe();
+  battery_state_service_unsubscribe();
 }
 
 //master chief? you mind telling me what you are doing at mcdonalds?
-int main(void) {
+int main() {
   init();
   app_event_loop();
   deinit();
