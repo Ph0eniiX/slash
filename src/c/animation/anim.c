@@ -58,6 +58,7 @@ void animate_stuff() {
     set_animation_things(time_anim_start, delay_ms, duration_ms);
     set_animation_things(time_anim_end, onscreen_ms, duration_ms);
 
+    //bat bar set things
     set_animation_things(bat_anim_start, delay_ms, duration_ms);
     set_animation_things(bat_anim_end, onscreen_ms, duration_ms);
     
