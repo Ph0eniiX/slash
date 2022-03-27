@@ -11,7 +11,7 @@ static void set_defaults() {
     settings.time_font = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
     settings.do_bt_buzz = true;
     settings.do_date = true;
-    settings.do_bat = true;
+    settings.do_bat = false;
     settings.flag_number = 0;
     settings.rot_flag = 0;
 }

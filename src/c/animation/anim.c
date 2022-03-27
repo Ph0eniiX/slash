@@ -23,7 +23,7 @@ void animate_stuff() {
     GRect time_start_rect = GRect(0, 0, bounds.size.w, bounds.size.h);
     GRect time_end_rect = GRect(0, -10, bounds.size.w, bounds.size.h);
 
-    GRect bat_start_rect = GRect(0, PBL_IF_ROUND_ELSE(23, 7), bounds.size.w, bounds.size.h);
+    GRect bat_start_rect = GRect(0, 7, bounds.size.w, bounds.size.h);
     GRect bat_end_rect = GRect(0, 0, bounds.size.w, bounds.size.h);
 
     //define property animations

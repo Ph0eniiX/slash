@@ -116,10 +116,10 @@ static void draw_bat(GContext *ctx) {
 static void draw_bat_chalk(GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
-    int bat_bar_height = 30;
-    int bat_bar_width = (110 * battery_level) / 100;
+    int bat_bar_height = bounds.size.h;
+    int bat_bar_width = (bounds.size.w * battery_level) / 100;
 
-    GRect bat_rect = GRect((bounds.size.w - bat_bar_width) / 2, 160, bat_bar_width, bat_bar_height);
+    GRect bat_rect = GRect((bounds.size.w - bat_bar_width) / 2, 0, bat_bar_width, bat_bar_height);
 
     graphics_context_set_fill_color(ctx, settings.main_color);
     graphics_fill_rect(ctx, bat_rect, 0, GCornerNone);

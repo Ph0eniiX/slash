@@ -22,6 +22,7 @@ static void bluetooth_callback(bool connected) {
 //sets animate_scheduled boolean to false after the animation finishes 
 static void timer_callback(void *ctx) {
   is_animate_scheduled = false;
+  layer_set_hidden(bat_layer, true);
 }
 
 static void battery_callback(BatteryChargeState state) {
@@ -49,11 +50,13 @@ static void do_animations_woah() {
       animation_schedule(end);
     }
 
-    if(settings.do_bat) {
+    if(settings.do_bat && bounds_real.size.w != bounds_real.size.h) {
       layer_set_hidden(bat_layer, false);
 
       animation_schedule(bat_anim_start);
       animation_schedule(bat_anim_end);
+    } else if(settings.do_bat) {
+      layer_set_hidden(bat_layer, false);
     }
   }
 }
@@ -91,6 +94,12 @@ static void main_window_load(Window *window) {
   flag_layer = layer_create(bounds);
   layer_set_update_proc(flag_layer, flag_update_proc);
   layer_add_child(window_layer, flag_layer);
+  
+  //draw battery bar
+  bat_layer = layer_create(bounds);
+  layer_set_update_proc(bat_layer, bat_update_proc);
+  layer_add_child(window_layer, bat_layer);
+  layer_set_hidden(bat_layer, true);
 
   //draw bg over flag
   bg_cover = layer_create(bounds);
@@ -102,28 +111,14 @@ static void main_window_load(Window *window) {
   layer_set_update_proc(time_layer, time_draw_update_proc);
   layer_add_child(window_layer, time_layer);
 
+  //draw date
   date_layer = layer_create(bounds);
   layer_set_update_proc(date_layer, date_update_proc);
   layer_add_child(window_layer, date_layer);
   layer_set_hidden(date_layer, true);
 
-  bat_layer = layer_create(bounds);
-  layer_set_update_proc(bat_layer, bat_update_proc);
-  layer_add_child(window_layer, bat_layer);
-  layer_set_hidden(bat_layer, true);
-
   animate_stuff();
 
-  //trying to get it to not pop up with the first shake
-  is_animate_scheduled = true;
-  app_timer_register(3400, timer_callback, NULL);
-
-  animation_schedule(date_anim_start);
-  animation_schedule(bat_anim_start);
-  animation_schedule(date_anim_end);
-  animation_schedule(bat_anim_end);
-
-  //update everything
   update_stuff();
 }
 

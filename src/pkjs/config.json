@@ -8,7 +8,7 @@
             },
             {
                 "type": "text",
-                "defaultValue": "By Nicki"
+                "defaultValue": "By Nikki"
             }
         ]
     },
@@ -59,6 +59,12 @@
                 "messageKey": "do_date_key",
                 "defaultValue": "true",
                 "label": "Shake to see date"
+            },
+            {
+                "type": "toggle",
+                "messageKey": "do_bat_key",
+                "defaultValue": "false",
+                "label": "Enable Battery (experimental on time round)"
             },
             {
                 "type": "select",
