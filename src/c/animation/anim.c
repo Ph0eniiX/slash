@@ -1,10 +1,6 @@
 #include <pebble.h>
 #include "anim.h"
-
-extern Window *main_window;
-extern Layer *time_layer, *date_layer, *bat_layer;
-
-Animation *time_anim_start, *time_anim_end, *date_anim_start, *date_anim_end, *bat_anim_start, *bat_anim_end;
+#include "../main.h"
 
 void set_animation_things(Animation *anim, int delay, int duration) {
     animation_set_curve(anim, AnimationCurveEaseInOut);
@@ -27,7 +23,7 @@ void animate_stuff() {
     GRect time_start_rect = GRect(0, 0, bounds.size.w, bounds.size.h);
     GRect time_end_rect = GRect(0, -10, bounds.size.w, bounds.size.h);
 
-    GRect bat_start_rect = GRect(0, 7, bounds.size.w, bounds.size.h);
+    GRect bat_start_rect = GRect(0, PBL_IF_ROUND_ELSE(23, 7), bounds.size.w, bounds.size.h);
     GRect bat_end_rect = GRect(0, 0, bounds.size.w, bounds.size.h);
 
     //define property animations
@@ -61,8 +57,4 @@ void animate_stuff() {
     //bat bar set things
     set_animation_things(bat_anim_start, delay_ms, duration_ms);
     set_animation_things(bat_anim_end, onscreen_ms, duration_ms);
-    
-    //create animation spawns (groups of animations)
-    start_spawn = animation_spawn_create(time_anim_start, date_anim_start, bat_anim_start, NULL);
-    end_spawn = animation_spawn_create(time_anim_end, date_anim_end, bat_anim_end, NULL);
 }

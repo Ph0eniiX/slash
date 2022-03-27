@@ -5,13 +5,12 @@
 #include "messaging/messaging.h"
 #include "animation/anim.h"
 
-//main window and layer variable stuff
-Window *main_window;
-Layer *time_layer, *flag_layer, *bg_cover, *date_layer, *bat_layer;
+//looking back... damn, my code is messy
+//i gotta do this better next time
 
 ClaySettings settings;
 
-bool animate_scheduled = false;
+bool is_animate_scheduled = false;
 
 //bluetooth buzz function
 static void bluetooth_callback(bool connected) {
@@ -22,8 +21,7 @@ static void bluetooth_callback(bool connected) {
 
 //sets animate_scheduled boolean to false after the animation finishes 
 static void timer_callback(void *ctx) {
-  animate_scheduled = false;
-  layer_set_hidden(bat_layer, true);
+  is_animate_scheduled = false;
 }
 
 static void battery_callback(BatteryChargeState state) {
@@ -31,22 +29,37 @@ static void battery_callback(BatteryChargeState state) {
   layer_mark_dirty(bat_layer);
 }
 
-static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
+static void do_animations_woah() {
   GRect bounds_real = layer_get_bounds(window_get_root_layer(main_window));
   GRect bounds_unobstructed = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
-  if(animate_scheduled == false && settings.do_date == true && bounds_real.size.h == bounds_unobstructed.size.h) {
-    animate_scheduled = true;
+  if(!is_animate_scheduled) {
+    is_animate_scheduled = true;
     app_timer_register(3400, timer_callback, NULL);
 
     animate_stuff();
 
-    layer_set_hidden(date_layer, false);
-    layer_set_hidden(bat_layer, false);
+    if(settings.do_date && bounds_real.size.h == bounds_unobstructed.size.h) {
+      layer_set_hidden(date_layer, false);
+      
+      Animation *start = animation_spawn_create(time_anim_start, date_anim_start, NULL);
+      Animation *end = animation_spawn_create(time_anim_end, date_anim_end, NULL);
 
-    animation_schedule(start_spawn);
-    animation_schedule(end_spawn);
+      animation_schedule(start);
+      animation_schedule(end);
+    }
+
+    if(settings.do_bat) {
+      layer_set_hidden(bat_layer, false);
+
+      animation_schedule(bat_anim_start);
+      animation_schedule(bat_anim_end);
+    }
   }
+}
+
+static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
+  do_animations_woah();
 }
 
 void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -101,6 +114,16 @@ static void main_window_load(Window *window) {
 
   animate_stuff();
 
+  //trying to get it to not pop up with the first shake
+  is_animate_scheduled = true;
+  app_timer_register(3400, timer_callback, NULL);
+
+  animation_schedule(date_anim_start);
+  animation_schedule(bat_anim_start);
+  animation_schedule(date_anim_end);
+  animation_schedule(bat_anim_end);
+
+  //update everything
   update_stuff();
 }
 

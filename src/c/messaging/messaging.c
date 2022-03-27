@@ -41,6 +41,11 @@ static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
         settings.do_date = date_t->value->int32 == 1;
     }
 
+    Tuple *bat_t = dict_find(iter, MESSAGE_KEY_do_bat_key);
+    if(bat_t) {
+        settings.do_bat = bat_t->value->int32 == 1;
+    }
+
     save_settings();
     update_stuff();
 }

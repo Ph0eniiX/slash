@@ -2,8 +2,6 @@
 #include "drawing.h"
 #include "../main.h"
 
-extern Window *main_window;
-
 extern ClaySettings settings;
 
 static char hour_char[] = "hh";
@@ -112,7 +110,18 @@ static void draw_bat(GContext *ctx) {
     GRect bat_rect = GRect((bounds.size.w * (100 - battery_level)) / 100 / 2, bounds.size.h - bat_bar_height, (bounds.size.w * battery_level) / 100, bat_bar_height);
 
     graphics_context_set_fill_color(ctx, settings.main_color);
-    //graphics_draw_text(ctx, bat_what, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), GRect(0, bounds.size.h - 30, bounds.size.w, bounds.size.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, 0);
+    graphics_fill_rect(ctx, bat_rect, 0, GCornerNone);
+}
+
+static void draw_bat_chalk(GContext *ctx) {
+    GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+
+    int bat_bar_height = 30;
+    int bat_bar_width = (110 * battery_level) / 100;
+
+    GRect bat_rect = GRect((bounds.size.w - bat_bar_width) / 2, 160, bat_bar_width, bat_bar_height);
+
+    graphics_context_set_fill_color(ctx, settings.main_color);
     graphics_fill_rect(ctx, bat_rect, 0, GCornerNone);
 }
 
@@ -133,7 +142,7 @@ void date_update_proc(Layer *layer, GContext *ctx) {
 }
 
 void bat_update_proc(Layer *layer, GContext *ctx) {
-    draw_bat(ctx);
+    PBL_IF_ROUND_ELSE(draw_bat_chalk(ctx), draw_bat(ctx));
 }
 
 void update_time() {
