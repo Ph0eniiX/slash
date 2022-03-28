@@ -64,7 +64,8 @@
                 "type": "toggle",
                 "messageKey": "do_bat_key",
                 "defaultValue": "false",
-                "label": "Enable Battery (experimental on time round)"
+                "label": "Enable battery bar",
+                "description": "(experimental on time round)"
             },
             {
                 "type": "select",
