@@ -17,7 +17,7 @@ static void battery_callback(BatteryChargeState state) {
 
 
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-    do_animations_woah();
+    do_anim_if_not_scheduled();
 }
 
 void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -72,7 +72,7 @@ static void main_window_load(Window *window) {
     layer_add_child(window_layer, date_layer);
     layer_set_hidden(date_layer, true);
 
-    animate_stuff();
+    set_anim_props();
 
     update_stuff();
 }

@@ -17,8 +17,8 @@ static void set_animation_things(Animation *anim, int delay, int duration) {
     animation_set_duration(anim, duration);
 }
 
-// actually animates the things
-void animate_stuff() {
+// sets all animation variables and properties
+void set_anim_props() {
     GRect bounds = layer_get_bounds(window_get_root_layer(main_window));
 
     // animation global(ish) variables
@@ -70,7 +70,7 @@ void animate_stuff() {
 }
 
 // doing the actual animations and displaying them on screen
-void do_animations_woah() {
+void do_anim_if_not_scheduled() {
     GRect bounds_real = layer_get_bounds(window_get_root_layer(main_window));
     GRect bounds_unobstructed = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
