@@ -12,13 +12,6 @@
 
 bool is_animate_scheduled = false;
 
-// bluetooth buzz function
-static void bluetooth_callback(bool connected) {
-    if (settings.do_bt_buzz == true && !connected) {
-        vibes_short_pulse();
-    }
-}
-
 // sets animate_scheduled boolean to false after the animation finishes
 static void timer_callback(void *ctx) {
     is_animate_scheduled = false;
@@ -128,6 +121,7 @@ static void main_window_unload() {
     layer_destroy(flag_layer);
     layer_destroy(bg_cover);
     layer_destroy(date_layer);
+    layer_destroy(bat_layer);
 }
 
 // app initialize function
@@ -136,26 +130,31 @@ static void init() {
 
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
     battery_state_service_subscribe(battery_callback);
+    accel_tap_service_subscribe(accel_tap_handler);
+    connection_service_subscribe((ConnectionHandlers) {
+        .pebble_app_connection_handler = bluetooth_callback
+    });
 
     window_set_window_handlers(main_window, (WindowHandlers){
-                                                .load = main_window_load,
-                                                .unload = main_window_unload});
+        .load = main_window_load,
+        .unload = main_window_unload}
+    );
 
     init_msg();
     load_settings();
 
     window_stack_push(main_window, true);
 
-    accel_tap_service_subscribe(accel_tap_handler);
     bluetooth_callback(connection_service_peek_pebble_app_connection());
     battery_callback(battery_state_service_peek());
 }
 
 static void deinit() {
-    window_destroy(main_window);
     tick_timer_service_unsubscribe();
     accel_data_service_unsubscribe();
     battery_state_service_unsubscribe();
+    connection_service_unsubscribe();
+    window_destroy(main_window);
 }
 
 // main program, does everything
