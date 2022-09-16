@@ -19,6 +19,7 @@ static void set_animation_things(Animation *anim, int delay, int duration) {
 
 // sets all animation variables and properties
 void set_anim_props() {
+    // window bounds rect
     GRect bounds = layer_get_bounds(window_get_root_layer(main_window));
 
     // animation global(ish) variables
@@ -79,8 +80,9 @@ void do_anim_if_not_scheduled() {
         is_animate_scheduled = true;
         app_timer_register(3400, timer_callback, NULL);
 
-        animate_stuff();
+        set_anim_props();
 
+        // if date is enabled then show the layer then animate it
         if (settings.do_date && bounds_real.size.h == bounds_unobstructed.size.h) {
             layer_set_hidden(date_layer, false);
 
@@ -91,6 +93,7 @@ void do_anim_if_not_scheduled() {
             animation_schedule(end);
         }
 
+        // if battery bar is enabled then show the layer then animate it
         if (settings.do_bat && bounds_real.size.w != bounds_real.size.h) {
             layer_set_hidden(bat_layer, false);
 

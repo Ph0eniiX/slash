@@ -8,8 +8,14 @@ static char date_char[] = "DAY MM/DD";
 
 static int edge_size = 7;
 
-extern int *flag_colors[];
-extern int num_stripes[];
+void update_time() {
+    time_t temp = time(NULL);
+    struct tm *tick_time = localtime(&temp);
+
+    strftime(hour_char, sizeof(hour_char), clock_is_24h_style() ? "%H" : "%I", tick_time);
+    strftime(min_char, sizeof(min_char), "%M", tick_time);
+    strftime(date_char, sizeof(date_char), "%a %m/%d", tick_time);
+}
 
 static void draw_bg_rect(GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
@@ -91,13 +97,4 @@ void date_update_proc(Layer *layer, GContext *ctx) {
 
 void bat_update_proc(Layer *layer, GContext *ctx) {
     PBL_IF_ROUND_ELSE(draw_bat_chalk(ctx), draw_bat(ctx));
-}
-
-void update_time() {
-    time_t temp = time(NULL);
-    struct tm *tick_time = localtime(&temp);
-
-    strftime(hour_char, sizeof(hour_char), clock_is_24h_style() ? "%H" : "%I", tick_time);
-    strftime(min_char, sizeof(min_char), "%M", tick_time);
-    strftime(date_char, sizeof(date_char), "%a %m/%d", tick_time);
 }

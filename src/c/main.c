@@ -10,27 +10,12 @@
 
 // I'm gonna go clean this stuff up now :]
 
-static void battery_callback(BatteryChargeState state) {
-    battery_level = state.charge_percent;
-    layer_mark_dirty(bat_layer);
-}
-
-
-static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-    do_anim_if_not_scheduled();
-}
-
-void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-    update_time();
-    layer_mark_dirty(time_layer);
-}
-
 // universal update and set the settings to everything
 void update_stuff() {
-    update_time();
-
+    // redraw background with correct color
     window_set_background_color(main_window, settings.slash_color);
 
+    // redraw all layers
     layer_mark_dirty(time_layer);
     layer_mark_dirty(flag_layer);
     layer_mark_dirty(bg_cover);
@@ -38,8 +23,26 @@ void update_stuff() {
     layer_mark_dirty(bat_layer);
 }
 
+// what to do when battery changes
+static void battery_callback(BatteryChargeState state) {
+    battery_level = state.charge_percent;
+    layer_mark_dirty(bat_layer);
+}
+
+// what to do when watch is "tapped" (shake)
+static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
+    do_anim_if_not_scheduled();
+}
+
+// updates and draws time
+void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+    update_time();
+    layer_mark_dirty(time_layer);
+}
+
 // actual app window loading functions
 static void main_window_load(Window *window) {
+    // initalizing window layer and main window bounds rect
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
 
