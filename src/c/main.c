@@ -10,49 +10,11 @@
 
 // I'm gonna go clean this stuff up now :]
 
-bool is_animate_scheduled = false;
-
-// sets animate_scheduled boolean to false after the animation finishes
-static void timer_callback(void *ctx) {
-    is_animate_scheduled = false;
-    layer_set_hidden(bat_layer, true);
-}
-
 static void battery_callback(BatteryChargeState state) {
     battery_level = state.charge_percent;
     layer_mark_dirty(bat_layer);
 }
 
-static void do_animations_woah() {
-    GRect bounds_real = layer_get_bounds(window_get_root_layer(main_window));
-    GRect bounds_unobstructed = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
-
-    if (!is_animate_scheduled) {
-        is_animate_scheduled = true;
-        app_timer_register(3400, timer_callback, NULL);
-
-        animate_stuff();
-
-        if (settings.do_date && bounds_real.size.h == bounds_unobstructed.size.h) {
-            layer_set_hidden(date_layer, false);
-
-            Animation *start = animation_spawn_create(time_anim_start, date_anim_start, NULL);
-            Animation *end = animation_spawn_create(time_anim_end, date_anim_end, NULL);
-
-            animation_schedule(start);
-            animation_schedule(end);
-        }
-
-        if (settings.do_bat && bounds_real.size.w != bounds_real.size.h) {
-            layer_set_hidden(bat_layer, false);
-
-            animation_schedule(bat_anim_start);
-            animation_schedule(bat_anim_end);
-        } else if (settings.do_bat) {
-            layer_set_hidden(bat_layer, false);
-        }
-    }
-}
 
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
     do_animations_woah();
@@ -149,6 +111,7 @@ static void init() {
     battery_callback(battery_state_service_peek());
 }
 
+// app deinitialize function
 static void deinit() {
     tick_timer_service_unsubscribe();
     accel_data_service_unsubscribe();
@@ -157,7 +120,7 @@ static void deinit() {
     window_destroy(main_window);
 }
 
-// main program, does everything
+// main program, does literally EVERYTHING
 int main() {
     init();
     app_event_loop();
