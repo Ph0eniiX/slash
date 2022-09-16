@@ -1,171 +1,172 @@
 #include <pebble.h>
 #include "main.h"
-#include "drawing/drawing.h"
-#include "config/config.h"
-#include "messaging/messaging.h"
 #include "animation/anim.h"
+#include "config/config.h"
+#include "drawing/drawing.h"
+#include "messaging/messaging.h"
 
-//looking back... damn, my code is messy
-//i gotta do this better next time
+// looking back... damn, my code is messy
+// i gotta do this better next time
 
-ClaySettings settings;
+// I'm gonna go clean this stuff up now :]
 
 bool is_animate_scheduled = false;
 
-//bluetooth buzz function
+// bluetooth buzz function
 static void bluetooth_callback(bool connected) {
-  if(settings.do_bt_buzz == true && !connected) {
-    vibes_short_pulse();
-  }
+    if (settings.do_bt_buzz == true && !connected) {
+        vibes_short_pulse();
+    }
 }
 
-//sets animate_scheduled boolean to false after the animation finishes 
+// sets animate_scheduled boolean to false after the animation finishes
 static void timer_callback(void *ctx) {
-  is_animate_scheduled = false;
-  layer_set_hidden(bat_layer, true);
+    is_animate_scheduled = false;
+    layer_set_hidden(bat_layer, true);
 }
 
 static void battery_callback(BatteryChargeState state) {
-  battery_level = state.charge_percent;
-  layer_mark_dirty(bat_layer);
+    battery_level = state.charge_percent;
+    layer_mark_dirty(bat_layer);
 }
 
 static void do_animations_woah() {
-  GRect bounds_real = layer_get_bounds(window_get_root_layer(main_window));
-  GRect bounds_unobstructed = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+    GRect bounds_real = layer_get_bounds(window_get_root_layer(main_window));
+    GRect bounds_unobstructed = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
-  if(!is_animate_scheduled) {
-    is_animate_scheduled = true;
-    app_timer_register(3400, timer_callback, NULL);
+    if (!is_animate_scheduled) {
+        is_animate_scheduled = true;
+        app_timer_register(3400, timer_callback, NULL);
 
-    animate_stuff();
+        animate_stuff();
 
-    if(settings.do_date && bounds_real.size.h == bounds_unobstructed.size.h) {
-      layer_set_hidden(date_layer, false);
-      
-      Animation *start = animation_spawn_create(time_anim_start, date_anim_start, NULL);
-      Animation *end = animation_spawn_create(time_anim_end, date_anim_end, NULL);
+        if (settings.do_date && bounds_real.size.h == bounds_unobstructed.size.h) {
+            layer_set_hidden(date_layer, false);
 
-      animation_schedule(start);
-      animation_schedule(end);
+            Animation *start = animation_spawn_create(time_anim_start, date_anim_start, NULL);
+            Animation *end = animation_spawn_create(time_anim_end, date_anim_end, NULL);
+
+            animation_schedule(start);
+            animation_schedule(end);
+        }
+
+        if (settings.do_bat && bounds_real.size.w != bounds_real.size.h) {
+            layer_set_hidden(bat_layer, false);
+
+            animation_schedule(bat_anim_start);
+            animation_schedule(bat_anim_end);
+        } else if (settings.do_bat) {
+            layer_set_hidden(bat_layer, false);
+        }
     }
-
-    if(settings.do_bat && bounds_real.size.w != bounds_real.size.h) {
-      layer_set_hidden(bat_layer, false);
-
-      animation_schedule(bat_anim_start);
-      animation_schedule(bat_anim_end);
-    } else if(settings.do_bat) {
-      layer_set_hidden(bat_layer, false);
-    }
-  }
 }
 
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-  do_animations_woah();
+    do_animations_woah();
 }
 
 void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-  update_time();
-  layer_mark_dirty(time_layer);
+    update_time();
+    layer_mark_dirty(time_layer);
 }
 
-//universal update and set the settings to everything
+// universal update and set the settings to everything
 void update_stuff() {
-  update_time();
+    update_time();
 
-  window_set_background_color(main_window, settings.slash_color);
+    window_set_background_color(main_window, settings.slash_color);
 
-  layer_mark_dirty(time_layer);
-  layer_mark_dirty(flag_layer);
-  layer_mark_dirty(bg_cover);
-  layer_mark_dirty(date_layer);
-  layer_mark_dirty(bat_layer);
+    layer_mark_dirty(time_layer);
+    layer_mark_dirty(flag_layer);
+    layer_mark_dirty(bg_cover);
+    layer_mark_dirty(date_layer);
+    layer_mark_dirty(bat_layer);
 }
 
-//actual app window loading functions
+// actual app window loading functions
 static void main_window_load(Window *window) {
-  Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(window_layer);
+    Layer *window_layer = window_get_root_layer(window);
+    GRect bounds = layer_get_bounds(window_layer);
 
-  window_set_background_color(main_window, settings.slash_color);
+    window_set_background_color(main_window, settings.slash_color);
 
-  //draw flag
-  flag_layer = layer_create(bounds);
-  layer_set_update_proc(flag_layer, flag_update_proc);
-  layer_add_child(window_layer, flag_layer);
-  
-  //draw battery bar
-  bat_layer = layer_create(bounds);
-  layer_set_update_proc(bat_layer, bat_update_proc);
-  layer_add_child(window_layer, bat_layer);
-  layer_set_hidden(bat_layer, true);
+    // draw flag
+    flag_layer = layer_create(bounds);
+    layer_set_update_proc(flag_layer, draw_flag_update_proc);
+    layer_add_child(window_layer, flag_layer);
 
-  //draw bg over flag
-  bg_cover = layer_create(bounds);
-  layer_set_update_proc(bg_cover, bg_update_proc);
-  layer_add_child(window_layer, bg_cover);
+    // draw battery bar
+    bat_layer = layer_create(bounds);
+    layer_set_update_proc(bat_layer, bat_update_proc);
+    layer_add_child(window_layer, bat_layer);
+    layer_set_hidden(bat_layer, true);
 
-  //draw time
-  time_layer = layer_create(bounds);
-  layer_set_update_proc(time_layer, time_draw_update_proc);
-  layer_add_child(window_layer, time_layer);
+    // draw bg over flag
+    bg_cover = layer_create(bounds);
+    layer_set_update_proc(bg_cover, bg_update_proc);
+    layer_add_child(window_layer, bg_cover);
 
-  //draw date
-  date_layer = layer_create(bounds);
-  layer_set_update_proc(date_layer, date_update_proc);
-  layer_add_child(window_layer, date_layer);
-  layer_set_hidden(date_layer, true);
+    // draw time
+    time_layer = layer_create(bounds);
+    layer_set_update_proc(time_layer, time_draw_update_proc);
+    layer_add_child(window_layer, time_layer);
 
-  animate_stuff();
+    // draw date
+    date_layer = layer_create(bounds);
+    layer_set_update_proc(date_layer, date_update_proc);
+    layer_add_child(window_layer, date_layer);
+    layer_set_hidden(date_layer, true);
 
-  update_stuff();
+    animate_stuff();
+
+    update_stuff();
 }
 
-//unloading functions !!
+// unloading functions !!
 static void main_window_unload() {
-  layer_destroy(time_layer);
-  layer_destroy(flag_layer);
-  layer_destroy(bg_cover);
-  layer_destroy(date_layer);
+    layer_destroy(time_layer);
+    layer_destroy(flag_layer);
+    layer_destroy(bg_cover);
+    layer_destroy(date_layer);
 }
 
-//app initialize function
+// app initialize function
 static void init() {
-  main_window = window_create();
+    main_window = window_create();
 
-  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
-  battery_state_service_subscribe(battery_callback);
+    tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+    battery_state_service_subscribe(battery_callback);
 
-  window_set_window_handlers(main_window, (WindowHandlers) {
-    .load = main_window_load,
-    .unload = main_window_unload
-  });
+    window_set_window_handlers(main_window, (WindowHandlers){
+                                                .load = main_window_load,
+                                                .unload = main_window_unload});
 
-  init_msg();
-  load_settings();
+    init_msg();
+    load_settings();
 
-  window_stack_push(main_window, true);
+    window_stack_push(main_window, true);
 
-  accel_tap_service_subscribe(accel_tap_handler);
-  bluetooth_callback(connection_service_peek_pebble_app_connection());  
-  battery_callback(battery_state_service_peek());
+    accel_tap_service_subscribe(accel_tap_handler);
+    bluetooth_callback(connection_service_peek_pebble_app_connection());
+    battery_callback(battery_state_service_peek());
 }
 
 static void deinit() {
-  window_destroy(main_window);
-  tick_timer_service_unsubscribe();
-  accel_data_service_unsubscribe();
-  battery_state_service_unsubscribe();
+    window_destroy(main_window);
+    tick_timer_service_unsubscribe();
+    accel_data_service_unsubscribe();
+    battery_state_service_unsubscribe();
 }
 
-//master chief? you mind telling me what you are doing at mcdonalds?
+// main program, does everything
 int main() {
-  init();
-  app_event_loop();
-  deinit();
+    init();
+    app_event_loop();
+    deinit();
 }
 
-//sir, finishing this big mac
+// master chief? you mind telling me what you are doing at mcdonalds?
 
-//https://www.youtube.com/watch?v=tCUJ8JqiyZc
+// sir, finishing this big mac
+
+// https://www.youtube.com/watch?v=tCUJ8JqiyZc

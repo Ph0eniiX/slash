@@ -3,8 +3,6 @@
 #include "../main.h"
 #include "../config/config.h"
 
-extern ClaySettings settings;
-
 static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
     Tuple *bg_color_t = dict_find(iter, MESSAGE_KEY_bg_color_key);
     if(bg_color_t) {
@@ -28,7 +26,7 @@ static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
 
     Tuple *flag_t = dict_find(iter, MESSAGE_KEY_flag_number_key);
     if(flag_t) {
-        settings.flag_number = atoi(flag_t->value->cstring);
+        settings.num_flag = atoi(flag_t->value->cstring);
     }
 
     Tuple *rot_flag_t = dict_find(iter, MESSAGE_KEY_rotate_flag_key);

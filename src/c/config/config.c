@@ -2,8 +2,7 @@
 #include "config.h"
 #include "../main.h"
 
-extern ClaySettings settings;
-
+// loading these settings when nothing is configured
 static void set_defaults() {
     settings.bg_color = GColorBlack;
     settings.main_color = GColorWhite;
@@ -12,15 +11,17 @@ static void set_defaults() {
     settings.do_bt_buzz = true;
     settings.do_date = true;
     settings.do_bat = true;
-    settings.flag_number = 0;
+    settings.num_flag = 0;
     settings.rot_flag = 0;
 }
 
+// loading settings from persistent storage
 void load_settings() {
     set_defaults();
     persist_read_data(SETTINGS_KEY, &settings, sizeof(settings));
 }
 
+// writing to persistent storage
 void save_settings() {
     persist_write_data(SETTINGS_KEY, &settings, sizeof(settings));
 }
