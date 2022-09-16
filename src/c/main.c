@@ -59,7 +59,8 @@ static void main_window_load(Window *window) {
     layer_add_child(window_layer, bat_layer);
     layer_set_hidden(bat_layer, true);
 
-    // draw bg over flag
+    // draw bg over flag and background
+        // to make a ring effect
     bg_cover = layer_create(bounds);
     layer_set_update_proc(bg_cover, bg_update_proc);
     layer_add_child(window_layer, bg_cover);
