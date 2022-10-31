@@ -4,6 +4,7 @@
 
 // loading these settings when nothing is configured
 static void set_defaults() {
+    // user-editable in config page
     settings.bg_color = GColorBlack;
     settings.main_color = GColorWhite;
     settings.slash_color = GColorRed;
@@ -14,9 +15,11 @@ static void set_defaults() {
     settings.num_flag = 0;
     settings.rot_flag = 0;
 
+    // not user-editable
     settings.anim_delay = 0;
     settings.anim_duration = 200;
     settings.anim_onscreen = 3000;
+    settings.edge_size = 7;
 }
 
 // loading settings from persistent storage

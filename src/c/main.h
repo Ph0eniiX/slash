@@ -1,7 +1,7 @@
 #pragma once
 #include <pebble.h>
 
-// defining all variables/settings in a struct for the entire program
+// struct that contains all settings in program
 typedef struct ClaySettings {
     GColor bg_color;
     GColor main_color;
@@ -16,9 +16,9 @@ typedef struct ClaySettings {
     int anim_delay;
     int anim_duration;
     int anim_onscreen;
+    int edge_size;
 } ClaySettings;
 
-// variable declarations
 Window *main_window;
 Layer *time_layer;
 Layer *flag_layer;
@@ -27,5 +27,5 @@ Layer *date_layer;
 Layer *bat_layer;
 ClaySettings settings;
 
-// function declarations
+// updates and redraws all layers
 void update_stuff();

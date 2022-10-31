@@ -17,7 +17,7 @@ void update_stuff() {
     layer_mark_dirty(bat_layer);
 }
 
-// callbacks and handlers ===========================================
+// handlers =========================================================
 
 static void battery_callback(BatteryChargeState state) {
     battery_level = state.charge_percent;
@@ -25,7 +25,7 @@ static void battery_callback(BatteryChargeState state) {
 }
 
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-    run_anim(layer_get_bounds(window_get_root_layer(main_window)), layer_get_unobstructed_bounds(window_get_root_layer(main_window)));
+    anim_run(layer_get_bounds(window_get_root_layer(main_window)), layer_get_unobstructed_bounds(window_get_root_layer(main_window)));
 }
 
 void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -53,8 +53,7 @@ static void main_window_load(Window *window) {
     layer_add_child(window_layer, bat_layer);
     layer_set_hidden(bat_layer, true);
 
-    // draw bg over flag and background
-        // to make a ring effect
+    // draw bg over flag and background to make a ring effect
     bg_cover = layer_create(bounds);
     layer_set_update_proc(bg_cover, bg_update_proc);
     layer_add_child(window_layer, bg_cover);
@@ -70,7 +69,7 @@ static void main_window_load(Window *window) {
     layer_add_child(window_layer, date_layer);
     layer_set_hidden(date_layer, true);
 
-    set_anim_props(bounds, settings.anim_delay, settings.anim_duration, settings.anim_onscreen);
+    anim_create(bounds, settings.anim_delay, settings.anim_duration, settings.anim_onscreen);
 
     update_stuff();
 }
@@ -88,6 +87,7 @@ static void main_window_unload() {
 static void init() {
     main_window = window_create();
 
+    // subscribing to watch services
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
     battery_state_service_subscribe(battery_callback);
     accel_tap_service_subscribe(accel_tap_handler);
@@ -95,6 +95,7 @@ static void init() {
         .pebble_app_connection_handler = bluetooth_callback
     });
 
+    // setting the functions when the window loads and unloads
     window_set_window_handlers(main_window, (WindowHandlers){
         .load = main_window_load,
         .unload = main_window_unload}
