@@ -2,40 +2,30 @@
 #include "anim.h"
 #include "../main.h"
 
-bool is_animate_scheduled;
-
 // sets animate_scheduled boolean to false after the animation finishes
-static void timer_callback(void *ctx) {
+static void s_timer_callback(void *ctx) {
     is_animate_scheduled = false;
     layer_set_hidden(bat_layer, true);
 }
 
-// sets the properties of an animation with an easy function
-static void set_animation_things(Animation *anim, int delay, int duration) {
+// sets the properties of an animation
+static void s_set_animation_things(Animation *anim, int delay, int duration) {
     animation_set_curve(anim, AnimationCurveEaseInOut);
     animation_set_delay(anim, delay);
     animation_set_duration(anim, duration);
 }
 
 // sets all animation variables and properties
-void set_anim_props() {
-    // window bounds rect
-    GRect bounds = layer_get_bounds(window_get_root_layer(main_window));
-
-    // animation global(ish) variables
-    int delay_ms = 0;
-    int duration_ms = 200;
-    int onscreen_ms = 3000;
-
+void set_anim_props(GRect bounds_full, int delay_ms, int duration_ms, int onscreen_ms) {
     // makes the coordinates for the animation
-    GRect date_start_rect = GRect(0, 50, bounds.size.w, bounds.size.h);
-    GRect date_end_rect = GRect(0, 0, bounds.size.w, bounds.size.h);
+    GRect date_start_rect = GRect(0, 50, bounds_full.size.w, bounds_full.size.h);
+    GRect date_end_rect = GRect(0, 0, bounds_full.size.w, bounds_full.size.h);
 
-    GRect time_start_rect = GRect(0, 0, bounds.size.w, bounds.size.h);
-    GRect time_end_rect = GRect(0, -10, bounds.size.w, bounds.size.h);
+    GRect time_start_rect = GRect(0, 0, bounds_full.size.w, bounds_full.size.h);
+    GRect time_end_rect = GRect(0, -10, bounds_full.size.w, bounds_full.size.h);
 
-    GRect bat_start_rect = GRect(0, 7, bounds.size.w, bounds.size.h);
-    GRect bat_end_rect = GRect(0, 0, bounds.size.w, bounds.size.h);
+    GRect bat_start_rect = GRect(0, 7, bounds_full.size.w, bounds_full.size.h);
+    GRect bat_end_rect = GRect(0, 0, bounds_full.size.w, bounds_full.size.h);
 
     // define property animations
     PropertyAnimation *prop_anim_date_start = property_animation_create_layer_frame(date_layer, &date_start_rect, &date_end_rect);
@@ -58,32 +48,53 @@ void set_anim_props() {
     bat_anim_end = property_animation_get_animation(prop_anim_bat_end);
 
     // date set things
-    set_animation_things(date_anim_start, delay_ms, duration_ms);
-    set_animation_things(date_anim_end, onscreen_ms, duration_ms);
+    s_set_animation_things(date_anim_start, delay_ms, duration_ms);
+    s_set_animation_things(date_anim_end, onscreen_ms, duration_ms);
 
     // time set things
-    set_animation_things(time_anim_start, delay_ms, duration_ms);
-    set_animation_things(time_anim_end, onscreen_ms, duration_ms);
+    s_set_animation_things(time_anim_start, delay_ms, duration_ms);
+    s_set_animation_things(time_anim_end, onscreen_ms, duration_ms);
 
     // bat bar set things
-    set_animation_things(bat_anim_start, delay_ms, duration_ms);
-    set_animation_things(bat_anim_end, onscreen_ms, duration_ms);
+    s_set_animation_things(bat_anim_start, delay_ms, duration_ms);
+    s_set_animation_things(bat_anim_end, onscreen_ms, duration_ms);
 }
 
-// doing the actual animations and displaying them on screen
-void do_anim_if_not_scheduled() {
-    GRect bounds_real = layer_get_bounds(window_get_root_layer(main_window));
-    GRect bounds_unobstructed = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
+/*
+// sets all animation variables and properties
+void set_anim_props(Animation *anim_start, Layer *layer, GRect frame_start, GRect frame_end, GRect bounds_full, int delay_ms, int duration_ms, int onscreen_m) {
+    // define property animations
+    PropertyAnimation *prop_anim_start = property_animation_create_layer_frame(layer, &frame_start, &frame_end);
+    PropertyAnimation *prop_anim_end = property_animation_create_layer_frame(layer, &frame_end, &frame_start);
 
+    bat_anim_start = property_animation_get_animation(prop_anim_bat_start);
+    bat_anim_end = property_animation_get_animation(prop_anim_bat_end);
+
+    // date set things
+    s_set_animation_things(date_anim_start, delay_ms, duration_ms);
+    s_set_animation_things(date_anim_end, onscreen_ms, duration_ms);
+
+    // time set things
+    s_set_animation_things(time_anim_start, delay_ms, duration_ms);
+    s_set_animation_things(time_anim_end, onscreen_ms, duration_ms);
+
+    // bat bar set things
+    s_set_animation_things(bat_anim_start, delay_ms, duration_ms);
+    s_set_animation_things(bat_anim_end, onscreen_ms, duration_ms);
+}
+*/
+
+// running animations if not scheduled ==============================
+void run_anim(GRect bounds_full, GRect bounds_unobstructed) {
     // if an animation isn't scheduled, animate everything
     if (!is_animate_scheduled) {
         is_animate_scheduled = true;
-        app_timer_register(3400, timer_callback, NULL);
+        app_timer_register(3400, s_timer_callback, NULL);
 
-        set_anim_props();
+        set_anim_props(bounds_full, settings.anim_delay, settings.anim_duration, settings.anim_onscreen);
 
         // if date is enabled then show the layer then animate it
-        if (settings.do_date && bounds_real.size.h == bounds_unobstructed.size.h) {
+        if (settings.do_date && bounds_full.size.h == bounds_unobstructed.size.h) {
             layer_set_hidden(date_layer, false);
 
             Animation *start = animation_spawn_create(time_anim_start, date_anim_start, NULL);
@@ -94,7 +105,7 @@ void do_anim_if_not_scheduled() {
         }
 
         // if battery bar is enabled then show the layer then animate it
-        if (settings.do_bat && bounds_real.size.w != bounds_real.size.h) {
+        if (settings.do_bat && bounds_full.size.w != bounds_full.size.h) {
             layer_set_hidden(bat_layer, false);
 
             animation_schedule(bat_anim_start);

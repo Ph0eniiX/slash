@@ -13,6 +13,10 @@ static void set_defaults() {
     settings.do_bat = true;
     settings.num_flag = 0;
     settings.rot_flag = 0;
+
+    settings.anim_delay = 0;
+    settings.anim_duration = 200;
+    settings.anim_onscreen = 3000;
 }
 
 // loading settings from persistent storage
