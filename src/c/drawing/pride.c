@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "pride.h"
 #include "../main.h"
 
 // definitions of each flag's hex code color variables
@@ -12,10 +13,9 @@ static int asexual[] = {0x000000, 0xAAAAAA, 0xFFFFFF, 0xAA00AA};
 static int nonbinary[] = {0xFFFF55, 0xFFFFFF, 0xAA55AA, 0x000000};
 
 // array that puts the above arrays into 
-int *flag_colors[] = {clear, pride, trans, bisexual, lesbian, pansexual, asexual, nonbinary};
-int num_stripes[] = {0, 6, 5, 5, 7, 3, 4, 4};
+static int *flag_colors[] = {clear, pride, trans, bisexual, lesbian, pansexual, asexual, nonbinary};
+static int num_stripes[] = {0, 6, 5, 5, 7, 3, 4, 4};
 
-// DRAW FLAG FUNCTION
 static void draw_flag(int segments, int colors[], GContext *ctx) {
     // setting bounds for main window's layer to draw flag for ENTIRE SCREEN
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
@@ -86,6 +86,6 @@ static void draw_flag(int segments, int colors[], GContext *ctx) {
 }
 
 // update_proc, sets function to call when marking layer as dirty
-void draw_flag_update_proc(Layer *layer, GContext *ctx) {
+void pride_update_proc(Layer *layer, GContext *ctx) {
     draw_flag(num_stripes[settings.num_flag], flag_colors[settings.num_flag], ctx);
 }

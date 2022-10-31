@@ -19,7 +19,7 @@ static void set_defaults() {
     settings.anim_delay = 0;
     settings.anim_duration = 200;
     settings.anim_onscreen = 3000;
-    settings.edge_size = 7;
+    settings.border_size = 7;
 }
 
 // loading settings from persistent storage

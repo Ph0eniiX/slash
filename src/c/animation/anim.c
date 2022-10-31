@@ -2,20 +2,19 @@
 #include "anim.h"
 #include "../main.h"
 
-// sets animate_scheduled boolean to false after the animation finishes
+static bool is_anim_scheduled;
+static Animation *time_anim_start, *time_anim_end; 
+static Animation *date_anim_start, *date_anim_end;
+static Animation *bat_anim_start, *bat_anim_end;
+
+// sets is_anim_scheduled to false after the animation finishes
 static void s_timer_callback(void *ctx) {
-    is_animate_scheduled = false;
+    is_anim_scheduled = false;
     layer_set_hidden(bat_layer, true);
 }
 
-// sets the properties of an animation
-static void s_set_animation_things(Animation *anim, int delay, int duration) {
-    animation_set_curve(anim, AnimationCurveEaseInOut);
-    animation_set_delay(anim, delay);
-    animation_set_duration(anim, duration);
-}
-
-Animation *anim_set_props(GRect frame_start, GRect frame_end, Layer *layer, int delay_ms, int duration_ms) {
+// sets properties and returns created animation
+static Animation *anim_set_props(GRect frame_start, GRect frame_end, Layer *layer, int delay_ms, int duration_ms) {
     PropertyAnimation *prop_anim = property_animation_create_layer_frame(layer, &frame_start, &frame_end);
     Animation *return_anim = property_animation_get_animation(prop_anim);
 
@@ -26,6 +25,7 @@ Animation *anim_set_props(GRect frame_start, GRect frame_end, Layer *layer, int 
     return return_anim;
 }
 
+// creates all animations in the program
 void anim_create(GRect bounds_full, int delay, int duration, int onscreen) {
     // date
     GRect date_start_rect = GRect(0, 50, bounds_full.size.w, bounds_full.size.h);
@@ -46,11 +46,11 @@ void anim_create(GRect bounds_full, int delay, int duration, int onscreen) {
     bat_anim_end = anim_set_props(bat_end_rect, bat_start_rect, bat_layer, onscreen, duration);
 }
 
-// running animations if not scheduled
+// runs all animations in the program
 void anim_run(GRect bounds_full, GRect bounds_unobstructed) {
     // if an animation isn't scheduled, animate everything
-    if (!is_animate_scheduled) {
-        is_animate_scheduled = true;
+    if (!is_anim_scheduled) {
+        is_anim_scheduled = true;
         app_timer_register(3400, s_timer_callback, NULL);
 
         anim_create(bounds_full, settings.anim_delay, settings.anim_duration, settings.anim_onscreen);

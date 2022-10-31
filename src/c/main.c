@@ -3,6 +3,7 @@
 #include "animation/anim.h"
 #include "config/config.h"
 #include "drawing/drawing.h"
+#include "drawing/pride.h"
 #include "messaging/messaging.h"
 
 // universal update function ========================================
@@ -44,7 +45,7 @@ static void main_window_load(Window *window) {
 
     // draw flag
     flag_layer = layer_create(bounds);
-    layer_set_update_proc(flag_layer, draw_flag_update_proc);
+    layer_set_update_proc(flag_layer, pride_update_proc);
     layer_add_child(window_layer, flag_layer);
 
     // draw battery bar

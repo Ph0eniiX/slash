@@ -16,7 +16,7 @@ typedef struct ClaySettings {
     int anim_delay;
     int anim_duration;
     int anim_onscreen;
-    int edge_size;
+    int border_size;
 } ClaySettings;
 
 Window *main_window;

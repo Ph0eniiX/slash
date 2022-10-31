@@ -3,6 +3,7 @@
 #include "../main.h"
 #include "../config/config.h"
 
+// creates tuples with values of message keys from settings and assigns to setting vars
 static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
     Tuple *bg_color_t = dict_find(iter, MESSAGE_KEY_bg_color_key);
     if(bg_color_t) {
@@ -48,7 +49,15 @@ static void inbox_recieved_handler(DictionaryIterator *iter, void *ctx) {
     update_stuff();
 }
 
+// initializes messaging configuration
 void init_msg() {
     app_message_register_inbox_received(inbox_recieved_handler);
     app_message_open(256, 256);
+}
+
+// bluetooth callback function, buzzes when BT disconnects
+void bluetooth_callback(bool connected) {
+    if(settings.do_bt_buzz == true && !connected) {
+        vibes_short_pulse();
+    }
 }

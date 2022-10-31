@@ -2,6 +2,11 @@
 #include "drawing.h"
 #include "../main.h"
 
+static char hour_char[] = "hh";
+static char min_char[] = "mm";
+static char date_char[] = "day mm/dd";
+
+// updates time and sets each string to current value
 void update_time() {
     // makes a temp time variable and sets the current time stuff to it
     time_t temp = time(NULL);
@@ -20,13 +25,13 @@ static void draw_bg_rect(GContext *ctx) {
 
     graphics_context_set_fill_color(ctx, settings.bg_color);
 
-    graphics_fill_rect(ctx, GRect(settings.edge_size, settings.edge_size, bounds.size.w - 2 * settings.edge_size, bounds.size.h - 2 * settings.edge_size), 0, 0);
+    graphics_fill_rect(ctx, GRect(settings.border_size, settings.border_size, bounds.size.w - 2 * settings.border_size, bounds.size.h - 2 * settings.border_size), 0, 0);
 }
 
 static void draw_bg_circle(GContext *ctx) {
     GRect bounds = layer_get_unobstructed_bounds(window_get_root_layer(main_window));
 
-    graphics_fill_circle(ctx, GPoint(bounds.size.w / 2, bounds.size.h / 2), bounds.size.h / 2 - settings.edge_size);
+    graphics_fill_circle(ctx, GPoint(bounds.size.w / 2, bounds.size.h / 2), bounds.size.h / 2 - settings.border_size);
 }
 
 static void draw_time(GContext *ctx) {
