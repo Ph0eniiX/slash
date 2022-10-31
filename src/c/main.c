@@ -25,7 +25,7 @@ static void battery_callback(BatteryChargeState state) {
 }
 
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-    do_anim_if_not_scheduled();
+    run_anim(layer_get_bounds(window_get_root_layer(main_window)), layer_get_unobstructed_bounds(window_get_root_layer(main_window)));
 }
 
 void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
