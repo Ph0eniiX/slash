@@ -2,4 +2,3 @@
 /node_modules
 /.vscode
 .lock-waf_linux2_build
-.gitignore
