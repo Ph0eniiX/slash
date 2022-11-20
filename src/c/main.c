@@ -41,6 +41,8 @@ static void main_window_load(Window *window) {
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
 
+    update_time();
+
     window_set_background_color(main_window, settings.slash_color);
 
     // draw flag

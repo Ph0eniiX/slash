@@ -56,7 +56,7 @@ static void draw_time(GContext *ctx) {
         GTextAlignmentCenter,
         0
     );
-    
+
     // draw minute number
     GRect min_textbox = GRect(0 + x_offset, bounds.size.h / 2 - 26 + y_offset, bounds.size.w, 50);
     graphics_draw_text(ctx,
